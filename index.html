@@ -6,11 +6,11 @@
 <meta name="robots" content="noindex">
 <title>Абонемент — Legion Taekwondo Team</title>
 <style>
-:root{--ink:#14161a;--paper:#f6f4f0;--brown:#c49b63;--red:#DC143C;--ok:#00FA9A;--warn:#9370DB;--mute:#c49b63}
+:root{--ink:#14161a;--paper:#f6f4f0;--brown:#c49b63;--red:#DC143C;--dark:#1B1D22;--ok:#00FA9A;--warn:#9370DB;--mute:#c49b63}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--ink);color:var(--paper);font-family:"Time New Romans"}
-.card{width:100%;max-width:380px;background:var(--paper);color:var(--ink);border-radius:14px;overflow:hidden}
-.top{background:var(--brown);color:#fff;padding:16px 20px;font-size:1.45rem;font-weight:700}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--brown);color:var(--paper);font-family:"Time New Romans"}
+.card{width:100%;max-width:380px;background:var(--paper);color:var(--ink);border-radius:14px;overflow:hidden;box-shadow:0 25px 60px rgba(0, 0, 0, 0.35),0 0 35px rgb(0, 0, 0);}
+.top{background:var(--dark);color:#fff;padding:16px 20px;font-size:1.45rem;font-weight:700}
 .top small{display:block;font-weight:400;opacity:.85;margin-top:2px}
 .body{padding:24px 20px 28px}
 .name{margin:0 0 20px;font-size:1.6rem;font-weight:700}
@@ -25,11 +25,65 @@ body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;back
 .state.over{background:var(--red)}
 .msg{font-size:1.1rem;line-height:1.5}
 form{display:flex;flex-direction:column;gap:10px;margin-top:14px}
-form input{font:inherit;font-size:1.5rem;padding:12px;text-align:center;letter-spacing:.12em;border:2px solid #c9c4ba;border-radius:10px}
-form input:focus{outline:3px solid var(--brown);outline-offset:1px;border-color:var(--brown)}
-form button{font:inherit;font-size:1.1rem;font-weight:700;padding:12px;border:0;border-radius:10px;background:var(--brown);color:#fff;cursor:pointer}
+form input{font:inherit;font-size:1.5rem;padding:12px;text-align:center;letter-spacing:.12em;border:2px solid #1B1D22;border-radius:10px;color:var(--dark);}
+form input:focus{outline:3px solid var(--dark);outline-offset:1px;border-color:var(--dark)}
+form button{font:inherit;font-size:1.1rem;font-weight:700;padding:12px;border:0;border-radius:10px;background:var(--dark);color:#fff;cursor:pointer}
 .err{margin:10px 0 0;color:var(--red);font-weight:600}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+@media (max-width: 480px) {
+    html, body {
+        margin: 0;
+        min-height: 100%;
+    }
+
+    body {
+        min-height: 100vh;
+        min-height: 100svh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        padding: 16px;
+    }
+
+    form {
+        width: 100%;
+        max-width: 450px;
+        margin: auto;
+        padding: 27px 21px;
+        border-radius: 20px;
+    }
+
+    h3 {
+        font-size: 24px;
+        margin-bottom: 24px;
+    }
+
+    input {
+        height: 47px;
+        margin-bottom: 18px;
+    }
+
+    button {
+        padding: 15px 12px;
+        font-size: 14px;
+    }
+
+    form p.login-link {
+        font-size: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
 </style>
 </head>
 <body>
