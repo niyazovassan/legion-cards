@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B1D22">
+<meta name="robots" content="noindex">
+<title>Абонемент — Legion Taekwondo Team</title>
+<style>
+:root{
+  --ink:#14161a;--paper:#f6f4f0;--brown:#c49b63;--red:#DC143C;--dark:#1B1D22;--ok:#4682B4;--warn:#9370DB;--mute:#c49b63;
+  /* Настройки стекла: прозрачность карточки, рамка, сила размытия */
+  --glass:rgba(27,29,34,.58);
+  --glass-line:rgba(255,255,255,.2);
+  --blur:18px;
+  /* Затемнение фоновой картинки (0 = без затемнения, 1 = чёрный) */
+  --dim:.30;
+}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--dark)}
+
+/* ФОН. Положи рядом с index.html файл bg.jpg (любой формат экрана).
+   Для телефона можно добавить вертикальную версию bg-mobile.jpg (1080x1920): на телефоне будет она, а без неё bg.jpg.
+   Если картинок нет, будет коричнево-тёмный градиент. */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;
+  background:
+    linear-gradient(rgba(20,22,26,var(--dim)),rgba(20,22,26,var(--dim))),
+    url("bg.jpg") center/cover no-repeat,
+    radial-gradient(120% 90% at 50% 0%,#c49b63 0%,#5a4527 55%,#1B1D22 100%);
+}
+@media (max-aspect-ratio:3/4){
+  body::before{
+    background:
+      linear-gradient(rgba(20,22,26,var(--dim)),rgba(20,22,26,var(--dim))),
+      url("bg-mobile.jpg") center/cover no-repeat,
+      url("bg.jpg") center/cover no-repeat,
+      radial-gradient(120% 90% at 50% 0%,#c49b63 0%,#5a4527 55%,#1B1D22 100%);
+  }
+}
+
+body{margin:0;min-height:100vh;min-height:100dvh;display:grid;place-items:center;
+  padding:max(20px,env(safe-area-inset-top)) 18px max(20px,env(safe-area-inset-bottom));
+  color:#fff;font-family:"Times New Roman",Times,Georgia,serif}
+
+/* КАРТОЧКА со стеклянным размытием */
+.card{width:100%;max-width:380px;border-radius:22px;overflow:hidden;color:#fff;
+  background:var(--glass);border:1px solid var(--glass-line);
+  -webkit-backdrop-filter:blur(var(--blur)) saturate(140%);backdrop-filter:blur(var(--blur)) saturate(140%);
+  box-shadow:0 25px 60px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.14)}
+/* если браузер не умеет размытие, делаем карточку плотнее, чтобы текст читался */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .card{background:rgba(27,29,34,.93)}
+}
+.top{display:flex;align-items:center;gap:14px;background:rgba(27,29,34,.55);padding:14px 20px;font-size:1.3rem;font-weight:700;line-height:1.15;border-bottom:1px solid var(--glass-line)}
+.top small{display:block;font-weight:400;opacity:.85;margin-top:4px;font-size:1rem;color:var(--brown)}
+.logo{flex:none;width:64px;height:auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.body{padding:24px 20px 28px}
+.name{margin:0 0 18px;font-size:1.7rem;font-weight:700}
+.days{font-size:4.8rem;font-weight:800;line-height:1;color:var(--paper)}
+.days-label{margin:4px 0 20px;color:var(--brown)}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:var(--ok);transition:width .6s}
+.until{margin:16px 0 0;font-size:1.1rem}
+.left{margin:6px 0 0;color:var(--brown)}
+.state{margin-top:18px;padding:11px 14px;border-radius:12px;font-weight:700;color:#fff;background:var(--ok)}
+.state.soon{background:var(--warn)}
+.state.over{background:var(--red)}
+.msg{margin:0;font-size:1.15rem;line-height:1.5}
+form{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+form input{font:inherit;font-size:1.6rem;padding:13px;width:100%;text-align:center;letter-spacing:.12em;color:#fff;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);border-radius:12px}
+form input::placeholder{color:rgba(255,255,255,.5);letter-spacing:.03em;font-size:1.1rem}
+form input:focus{outline:3px solid rgba(196,155,99,.45);outline-offset:1px;border-color:var(--brown)}
+form button{font:inherit;font-size:1.1rem;font-weight:700;padding:13px;border:0;border-radius:12px;cursor:pointer;background:var(--brown);color:var(--dark)}
+form button:active{transform:translateY(1px)}
+.err{margin:12px 0 0;color:#ff8a80;font-weight:700}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="top">
+    <img class="logo" src="logo.png" width="64" height="69" alt="" onerror="this.remove()">
+    <div>Legion Taekwondo Team<small>Абонемент</small></div>
+  </div>
+  <div class="body" id="out"><p class="msg">Загрузка…</p></div>
+</main>
+<script>
+const out = document.getElementById('out');
+const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+
+function msg(text){
+  out.innerHTML = '';
+  const p = document.createElement('p');
+  p.className = 'msg';
+  p.textContent = text;
+  out.appendChild(p);
+}
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function plural(n, a, b, c){
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return a;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return b;
+  return c;
+}
+
+function render(s){
+  if (!s) return msg('Карта не найдена. Покажите её тренеру.');
+  if (!s.name || !s.until) return msg('Карта ещё не активирована. Обратитесь к тренеру.');
+
+  const [y, m, d] = s.until.split('-').map(Number);
+  const until = new Date(y, m - 1, d);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = Math.round((until - today) / 86400000);
+
+  out.innerHTML = '';
+  out.appendChild(el('h1', 'name', s.name));
+
+  const over = days < 0;
+  out.appendChild(el('div', 'days', over ? '0' : String(days)));
+  out.appendChild(el('div', 'days-label', over ? 'дней осталось' : plural(days, 'день остался', 'дня осталось', 'дней осталось')));
+
+  const bar = el('div', 'bar'); const fill = document.createElement('i');
+  bar.appendChild(fill); out.appendChild(bar);
+  requestAnimationFrame(() => { fill.style.width = Math.max(0, Math.min(100, days / 30 * 100)) + '%'; });
+  if (days <= 7) fill.style.background = over ? 'var(--red)' : 'var(--warn)';
+
+  out.appendChild(el('p', 'until', 'Оплачено до ' + d + ' ' + MONTHS[m - 1] + ' ' + y));
+  if (typeof s.left === 'number') {
+    out.appendChild(el('p', 'left', 'Осталось занятий: ' + s.left));
+  }
+
+  let cls = 'state', text = 'Абонемент действует';
+  if (over) { cls += ' over'; text = 'Абонемент закончился. Продлите у тренера'; }
+  else if (days <= 7) { cls += ' soon'; text = 'Скоро закончится. Не забудьте продлить'; }
+  out.appendChild(el('div', cls, text));
+}
+
+function normalize(v){ return String(v || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+
+function showForm(error){
+  out.innerHTML = '';
+  out.appendChild(el('p', 'msg', 'Введите номер с вашей карты'));
+  const f = document.createElement('form');
+  const i = document.createElement('input');
+  i.type = 'text'; i.autocomplete = 'off'; i.autocapitalize = 'none'; i.spellcheck = false;
+  i.maxLength = 12; i.placeholder = 'например k7x9q2'; i.setAttribute('aria-label', 'Номер карты');
+  const b = el('button', '', 'Показать абонемент'); b.type = 'submit';
+  f.appendChild(i); f.appendChild(b);
+  f.onsubmit = e => {
+    e.preventDefault();
+    const c = normalize(i.value);
+    if (c) location.search = '?c=' + c;
+  };
+  out.appendChild(f);
+  if (error) out.appendChild(el('p', 'err', error));
+  i.focus();
+}
+
+const code = normalize(new URLSearchParams(location.search).get('c'));
+if (!code) {
+  showForm();
+} else {
+  fetch('data.json', {cache: 'no-store'})
+    .then(r => r.json())
+    .then(data => {
+      if (Object.prototype.hasOwnProperty.call(data, code)) render(data[code]);
+      else showForm('Такой карты нет. Проверьте номер.');
+    })
+    .catch(() => msg('Не удалось загрузить данные. Попробуйте позже.'));
+}
+</script>
+</body>
+</html>
